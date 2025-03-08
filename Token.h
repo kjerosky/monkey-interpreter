@@ -2,6 +2,7 @@
 #define TOKEN_H
 
 #include <string>
+#include <map>
 
 namespace Token {
     typedef std::string TokenType;
@@ -30,6 +31,10 @@ namespace Token {
 
     const TokenType FUNCTION = "FUNCTION";
     const TokenType LET = "LET";
+
+    extern std::map<std::string, TokenType> keywords;
+
+    TokenType lookup_ident(const std::string& ident);
 }
 
 #endif

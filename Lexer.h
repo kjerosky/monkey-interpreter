@@ -23,6 +23,11 @@ private:
     char current_char;
 
     void read_char();
+    std::string read_identifier();
+    bool is_letter(char the_char);
+    void skip_whitespace();
+    std::string read_number();
+    bool is_digit(char the_char);
 };
 
 #endif

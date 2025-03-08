@@ -6,16 +6,52 @@
 int main(int argc, char** argv) {
     int failed_tests = 0;
 
-    std::string input = "=+(){},;";
+    std::string input = "let five = 5;\
+let ten = 10;\
+\
+let add = fn(x, y) {\
+    x + y;\
+};\
+\
+let result = add(five, ten);\
+";
 
     std::vector<Token::Token> expected_tokens = {
+        { Token::LET, "let" },
+        { Token::IDENT, "five" },
         { Token::ASSIGN, "=" },
-        { Token::PLUS, "+" },
+        { Token::INT, "5" },
+        { Token::SEMICOLON, ";" },
+        { Token::LET, "let" },
+        { Token::IDENT, "ten" },
+        { Token::ASSIGN, "=" },
+        { Token::INT, "10" },
+        { Token::SEMICOLON, ";" },
+        { Token::LET, "let" },
+        { Token::IDENT, "add" },
+        { Token::ASSIGN, "=" },
+        { Token::FUNCTION, "fn" },
         { Token::LPAREN, "(" },
+        { Token::IDENT, "x" },
+        { Token::COMMA, "," },
+        { Token::IDENT, "y" },
         { Token::RPAREN, ")" },
         { Token::LBRACE, "{" },
+        { Token::IDENT, "x" },
+        { Token::PLUS, "+" },
+        { Token::IDENT, "y" },
+        { Token::SEMICOLON, ";" },
         { Token::RBRACE, "}" },
+        { Token::SEMICOLON, ";" },
+        { Token::LET, "let" },
+        { Token::IDENT, "result" },
+        { Token::ASSIGN, "=" },
+        { Token::IDENT, "add" },
+        { Token::LPAREN, "(" },
+        { Token::IDENT, "five" },
         { Token::COMMA, "," },
+        { Token::IDENT, "ten" },
+        { Token::RPAREN, ")" },
         { Token::SEMICOLON, ";" },
         { Token::END_OF_FILE, "" },
     };

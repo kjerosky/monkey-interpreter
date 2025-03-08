@@ -14,6 +14,9 @@ Lexer::~Lexer() {
 
 void Lexer::init(const std::string& input) {
     this->input = input;
+
+    position = 0;
+    read_position = 0;
     read_char();
 }
 
@@ -21,6 +24,8 @@ void Lexer::init(const std::string& input) {
 
 Token::Token Lexer::next_token() {
     Token::Token token;
+
+    skip_whitespace();
 
     std::string current_char_as_string(1, current_char);
     switch (current_char) {
@@ -51,6 +56,23 @@ Token::Token Lexer::next_token() {
         case static_cast<char>(0):
             token = { Token::END_OF_FILE, "" };
             break;
+        default:
+            if (is_letter(current_char)) {
+                token.literal = read_identifier();
+                token.type = Token::lookup_ident(token.literal);
+
+                // exit early here so we don't incorrectly read an extra character
+                return token; 
+            } else if (is_digit(current_char)) {
+                token.type = Token::INT;
+                token.literal = read_number();
+
+                // exit early here so we don't incorrectly read an extra character
+                return token; 
+            } else {
+                token = { Token::ILLEGAL, current_char_as_string };
+            }
+            break;
     }
 
     read_char();
@@ -69,4 +91,48 @@ void Lexer::read_char() {
 
     position = read_position;
     read_position++;
+}
+
+// --------------------------------------------------------------------------
+
+std::string Lexer::read_identifier() {
+    std::string identifier = "";
+    while (is_letter(current_char)) {
+        identifier += current_char;
+        read_char();
+    }
+
+    return identifier;
+}
+
+// --------------------------------------------------------------------------
+
+bool Lexer::is_letter(char the_char) {
+    return ('a' <= the_char && the_char <= 'z') || ('A' <= the_char && the_char <= 'Z') || the_char == '_';
+}
+
+// --------------------------------------------------------------------------
+
+void Lexer::skip_whitespace() {
+    while (current_char == ' ' || current_char == '\t' || current_char == '\n' || current_char == '\r') {
+        read_char();
+    }
+}
+
+// --------------------------------------------------------------------------
+
+std::string Lexer::read_number() {
+    std::string number = "";
+    while (is_digit(current_char)) {
+        number += current_char;
+        read_char();
+    }
+
+    return number;
+}
+
+// --------------------------------------------------------------------------
+
+bool Lexer::is_digit(char the_char) {
+    return '0' <= the_char && the_char <= '9';
 }
