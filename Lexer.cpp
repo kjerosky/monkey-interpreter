@@ -30,7 +30,13 @@ Token::Token Lexer::next_token() {
     std::string current_char_as_string(1, current_char);
     switch (current_char) {
         case '=':
-            token = { Token::ASSIGN, current_char_as_string };
+            if (peek_char() == '=') {
+                char previous_char = current_char;
+                read_char();
+                token = { Token::EQ, std::string(1, previous_char) + std::string(1, current_char) };
+            } else {
+                token = { Token::ASSIGN, current_char_as_string };
+            }
             break;
         case ';':
             token = { Token::SEMICOLON, current_char_as_string };
@@ -46,6 +52,30 @@ Token::Token Lexer::next_token() {
             break;
         case '+':
             token = { Token::PLUS, current_char_as_string };
+            break;
+        case '-':
+            token = { Token::MINUS, current_char_as_string };
+            break;
+        case '!':
+            if (peek_char() == '=') {
+                char previous_char = current_char;
+                read_char();
+                token = { Token::NOT_EQ, std::string(1, previous_char) + std::string(1, current_char) };
+            } else {
+                token = {Token::BANG, current_char_as_string};
+            }
+            break;
+        case '/':
+            token = { Token::SLASH, current_char_as_string };
+            break;
+        case '*':
+            token = { Token::ASTERISK, current_char_as_string };
+            break;
+        case '<':
+            token = { Token::LT, current_char_as_string };
+            break;
+        case '>':
+            token = { Token::GT, current_char_as_string };
             break;
         case '{':
             token = { Token::LBRACE, current_char_as_string };
@@ -135,4 +165,14 @@ std::string Lexer::read_number() {
 
 bool Lexer::is_digit(char the_char) {
     return '0' <= the_char && the_char <= '9';
+}
+
+// --------------------------------------------------------------------------
+
+char Lexer::peek_char() {
+    if (position >= input.length()) {
+        return static_cast<char>(0);
+    } else {
+        return input[read_position];
+    }
 }

@@ -28,6 +28,7 @@ private:
     void skip_whitespace();
     std::string read_number();
     bool is_digit(char the_char);
+    char peek_char();
 };
 
 #endif
