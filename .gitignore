@@ -1,4 +1,5 @@
 .vscode
+monkey-interpreter
 test_lexer
-test_lexer.dSYM
+*.dSYM
 
