@@ -1,5 +1,5 @@
 .vscode
-monkey-interpreter
-test_lexer
-*.dSYM
 
+.DS_Store
+
+build
