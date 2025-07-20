@@ -11,6 +11,7 @@ namespace ast {
         virtual ~Node() {}
 
         virtual std::string get_token_literal() = 0;
+        virtual std::string get_string() = 0;
     };
 
     struct Statement : public Node {
@@ -37,6 +38,19 @@ namespace ast {
                 return statements[0]->get_token_literal();
             }
         }
+
+        virtual std::string get_string() override {
+            std::string output;
+
+            for (int i = 0; i < statements.size(); i++) {
+                output += statements[i]->get_string();
+                if (i < statements.size() - 1) {
+                    output += " ";
+                }
+            }
+
+            return output;
+        }
     };
 
     struct Identifier : public Expression {
@@ -45,6 +59,10 @@ namespace ast {
 
         virtual std::string get_token_literal() override {
             return token.literal;
+        }
+
+        virtual std::string get_string() override {
+            return value;
         }
     };
 
@@ -71,6 +89,18 @@ namespace ast {
         virtual std::string get_token_literal() override {
             return token.literal;
         }
+
+        virtual std::string get_string() override {
+            std::string output = get_token_literal() + " " + name->get_string() + " = ";
+
+            if (value != nullptr) {
+                output += value->get_string();
+            }
+
+            output += ";";
+
+            return output;
+        }
     };
 
     struct ReturnStatement : public Statement {
@@ -89,6 +119,45 @@ namespace ast {
 
         virtual std::string get_token_literal() override {
             return token.literal;
+        }
+
+        virtual std::string get_string() override {
+            std::string output = get_token_literal() + " ";
+
+            if (return_value != nullptr) {
+                output += return_value->get_string();
+            }
+
+            output += ";";
+
+            return output;
+        }
+    };
+
+    struct ExpressionStatement : public Statement {
+        token::Token token;
+        Expression* expression;
+
+        ExpressionStatement() {
+            expression = nullptr;
+        }
+
+        virtual ~ExpressionStatement() {
+            if (expression != nullptr) {
+                delete expression;
+            }
+        }
+
+        virtual std::string get_token_literal() override {
+            return token.literal;
+        }
+
+        virtual std::string get_string() override {
+            if (expression != nullptr) {
+                return expression->get_string();
+            }
+
+            return "";
         }
     };
 };
