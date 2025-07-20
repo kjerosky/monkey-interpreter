@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "Token.h"
+#include "token.h"
 
 namespace ast {
     struct Node {
@@ -40,7 +40,7 @@ namespace ast {
     };
 
     struct Identifier : public Expression {
-        Token::Token token;
+        token::Token token;
         std::string value;
 
         virtual std::string get_token_literal() override {
@@ -49,7 +49,7 @@ namespace ast {
     };
 
     struct LetStatement : public Statement {
-        Token::Token token;
+        token::Token token;
         Identifier* name;
         Expression* value;
 

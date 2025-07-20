@@ -6,7 +6,7 @@
 
 #include "ast.h"
 #include "Lexer.h"
-#include "Token.h"
+#include "token.h"
 
 class Parser {
 
@@ -21,17 +21,17 @@ public:
 private:
 
     Lexer* lexer;
-    Token::Token current_token;
-    Token::Token peek_token;
+    token::Token current_token;
+    token::Token peek_token;
     std::vector<std::string> errors;
 
     void next_token();
-    bool is_current_token_type(Token::TokenType type);
-    bool is_peek_token_type(Token::TokenType type);
-    bool expect_peek_type(Token::TokenType type);
+    bool is_current_token_type(token::TokenType type);
+    bool is_peek_token_type(token::TokenType type);
+    bool expect_peek_type(token::TokenType type);
     ast::Statement* parse_statement();
     ast::LetStatement* parse_let_statement();
-    void log_peek_error(Token::TokenType type);
+    void log_peek_error(token::TokenType type);
 };
 
 #endif

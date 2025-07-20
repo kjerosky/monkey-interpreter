@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "Token.h"
+#include "token.h"
 
 Repl::Repl() {
     // do nothing
@@ -28,7 +28,7 @@ void Repl::start() {
             return;
         }
 
-        for (Token::Token token = lexer.next_token(); token.type != Token::END_OF_FILE; token = lexer.next_token()) {
+        for (token::Token token = lexer.next_token(); token.type != token::END_OF_FILE; token = lexer.next_token()) {
             std::cout << "{ type=\"" << token.type << "\", literal=\"" << token.literal << "\" }" << std::endl;
         }
         std::cout << std::endl;

@@ -31,7 +31,7 @@ ast::Program* Parser::parse_program() {
 
     ast::Program* program = new ast::Program();
 
-    while (current_token.type != Token::END_OF_FILE) {
+    while (current_token.type != token::END_OF_FILE) {
         ast::Statement* statement = parse_statement();
         if (statement != nullptr) {
             program->statements.push_back(statement);
@@ -46,7 +46,7 @@ ast::Program* Parser::parse_program() {
 // --------------------------------------------------------------------------
 
 ast::Statement* Parser::parse_statement() {
-    if (current_token.type == Token::LET) {
+    if (current_token.type == token::LET) {
         return parse_let_statement();
     } else {
         return nullptr;
@@ -59,7 +59,7 @@ ast::LetStatement* Parser::parse_let_statement() {
     ast::LetStatement* let_statement = new ast::LetStatement();
     let_statement->token = current_token;
 
-    if (!expect_peek_type(Token::IDENT)) {
+    if (!expect_peek_type(token::IDENT)) {
         delete let_statement;
         return nullptr;
     }
@@ -68,13 +68,13 @@ ast::LetStatement* Parser::parse_let_statement() {
     let_statement->name->token = current_token;
     let_statement->name->value = current_token.literal;
 
-    if (!expect_peek_type(Token::ASSIGN)) {
+    if (!expect_peek_type(token::ASSIGN)) {
         delete let_statement;
         return nullptr;
     }
 
     //TODO: For now, don't worry about the expression after the assignment operator.
-    while (!is_current_token_type(Token::SEMICOLON)) {
+    while (!is_current_token_type(token::SEMICOLON)) {
         next_token();
     }
 
@@ -83,19 +83,19 @@ ast::LetStatement* Parser::parse_let_statement() {
 
 // --------------------------------------------------------------------------
 
-bool Parser::is_current_token_type(Token::TokenType type) {
+bool Parser::is_current_token_type(token::TokenType type) {
     return current_token.type == type;
 }
 
 // --------------------------------------------------------------------------
 
-bool Parser::is_peek_token_type(Token::TokenType type) {
+bool Parser::is_peek_token_type(token::TokenType type) {
     return peek_token.type == type;
 }
 
 // --------------------------------------------------------------------------
 
-bool Parser::expect_peek_type(Token::TokenType type) {
+bool Parser::expect_peek_type(token::TokenType type) {
     if (is_peek_token_type(type)) {
         next_token();
         return true;
@@ -113,7 +113,7 @@ std::vector<std::string>& Parser::get_errors() {
 
 // --------------------------------------------------------------------------
 
-void Parser::log_peek_error(Token::TokenType type) {
+void Parser::log_peek_error(token::TokenType type) {
     std::string error_message = "unexpected next token - expected=" + type + ", actual=" + peek_token.type;
     errors.push_back(error_message);
 }

@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-namespace Token {
+namespace token {
     typedef std::string TokenType;
 
     struct Token {

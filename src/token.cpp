@@ -1,6 +1,6 @@
-#include "Token.h"
+#include "token.h"
 
-namespace Token {
+namespace token {
     std::map<std::string, TokenType> keywords = {
         { "fn", FUNCTION },
         { "let", LET },

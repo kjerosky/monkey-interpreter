@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "Token.h"
+#include "token.h"
 
 class Lexer {
 
@@ -13,7 +13,7 @@ public:
     ~Lexer();
 
     void init(const std::string& input);
-    Token::Token next_token();
+    token::Token next_token();
 
 private:
 
