@@ -53,15 +53,15 @@ let y = 10; \
 let foobar = 838383; \
 ";
 
-    Lexer lexer;
-    lexer.init(input);
-
-    Parser parser(&lexer);
-
     std::vector<std::string> expected_identifiers_for_statements;
     expected_identifiers_for_statements.push_back("x");
     expected_identifiers_for_statements.push_back("y");
     expected_identifiers_for_statements.push_back("foobar");
+
+    Lexer lexer;
+    lexer.init(input);
+
+    Parser parser(&lexer);
 
     ast::Program* program = parser.parse_program();
     TestResult parser_errors = check_parser_for_errors(parser);
@@ -76,8 +76,10 @@ let foobar = 838383; \
     if (program == nullptr) {
         return { false, "parse_program() returned null" };
     } else if (program->statements.size() != expected_identifiers_for_statements.size()) {
+        std::string statements_size = std::to_string(program->statements.size());
+
         delete program;
-        return { false, "program->statements contains unexpected number of statements - expected=" + std::to_string(expected_identifiers_for_statements.size()) + ", acutal=" + std::to_string(program->statements.size()) };
+        return { false, "program->statements contains unexpected number of statements - expected=" + std::to_string(expected_identifiers_for_statements.size()) + ", actual=" + statements_size };
     }
 
     for (int i = 0; i < program->statements.size(); i++) {
@@ -94,6 +96,52 @@ let foobar = 838383; \
 
 // --------------------------------------------------------------------------
 
+TestResult test_return_statements() {
+    std::string input = "\
+return 5; \
+return 10; \
+return 993322; \
+";
+
+    int expected_statements_size = 3;
+    std::string expected_token_literal = "return";
+
+    Lexer lexer;
+    lexer.init(input);
+
+    Parser parser(&lexer);
+
+    ast::Program* program = parser.parse_program();
+    TestResult parser_errors = check_parser_for_errors(parser);
+    if (!parser_errors.passed) {
+        if (program != nullptr) {
+            delete program;
+        }
+
+        return { false, parser_errors.failure_message };
+    }
+
+    if (program == nullptr) {
+        return { false, "parse_program() returned null" };
+    } else if (program->statements.size() != expected_statements_size) {
+        std::string statements_size = std::to_string(program->statements.size());
+
+        delete program;
+        return { false, "program->statements contains unexpected number of statements - expected=" + std::to_string(expected_statements_size) + ", actual=" + statements_size };
+    }
+
+    for (ast::Statement* statement : program->statements) {
+        if (statement->get_token_literal() != "return") {
+            delete program;
+            return { false, "unexpected token literal - expected=return, actual=" + statement->get_token_literal() };
+        }
+    }
+
+    return { true, "" };
+}
+
+// --------------------------------------------------------------------------
+
 int main(int argc, char** argv) {
     int failed_tests = 0;
 
@@ -102,6 +150,14 @@ int main(int argc, char** argv) {
         std::cout << "✅ Test 1 - test_let_statements - passed" << std::endl;
     } else {
         std::cout << "❌ Test 1 - test_let_statements - failed : " << test_result.failure_message << std::endl;
+        failed_tests++;
+    }
+
+    test_result = test_return_statements();
+    if (test_result.passed) {
+        std::cout << "✅ Test 2 - test_return_statements - passed" << std::endl;
+    } else {
+        std::cout << "❌ Test 2 - test_return_statements - failed : " << test_result.failure_message << std::endl;
         failed_tests++;
     }
 

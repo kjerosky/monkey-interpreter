@@ -72,6 +72,25 @@ namespace ast {
             return token.literal;
         }
     };
+
+    struct ReturnStatement : public Statement {
+        token::Token token;
+        Expression* return_value;
+
+        ReturnStatement() {
+            return_value = nullptr;
+        }
+
+        virtual ~ReturnStatement() {
+            if (return_value != nullptr) {
+                delete return_value;
+            }
+        }
+
+        virtual std::string get_token_literal() override {
+            return token.literal;
+        }
+    };
 };
 
 #endif

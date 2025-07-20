@@ -48,6 +48,8 @@ ast::Program* Parser::parse_program() {
 ast::Statement* Parser::parse_statement() {
     if (current_token.type == token::LET) {
         return parse_let_statement();
+    } else if (current_token.type == token::RETURN) {
+        return parse_return_statement();
     } else {
         return nullptr;
     }
@@ -73,7 +75,7 @@ ast::LetStatement* Parser::parse_let_statement() {
         return nullptr;
     }
 
-    //TODO: For now, don't worry about the expression after the assignment operator.
+    //TODO: For now, don't worry about the expression part in the statement.
     while (!is_current_token_type(token::SEMICOLON)) {
         next_token();
     }
@@ -116,4 +118,20 @@ std::vector<std::string>& Parser::get_errors() {
 void Parser::log_peek_error(token::TokenType type) {
     std::string error_message = "unexpected next token - expected=" + type + ", actual=" + peek_token.type;
     errors.push_back(error_message);
+}
+
+// --------------------------------------------------------------------------
+
+ast::ReturnStatement* Parser::parse_return_statement() {
+    ast::ReturnStatement* return_statement = new ast::ReturnStatement();
+    return_statement->token = current_token;
+
+    next_token();
+
+    //TODO: For now, don't worry about the expression part in the statement.
+    while (!is_current_token_type(token::SEMICOLON)) {
+        next_token();
+    }
+
+    return return_statement;
 }

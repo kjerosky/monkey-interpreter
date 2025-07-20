@@ -29,9 +29,11 @@ private:
     bool is_current_token_type(token::TokenType type);
     bool is_peek_token_type(token::TokenType type);
     bool expect_peek_type(token::TokenType type);
+    void log_peek_error(token::TokenType type);
+
     ast::Statement* parse_statement();
     ast::LetStatement* parse_let_statement();
-    void log_peek_error(token::TokenType type);
+    ast::ReturnStatement* parse_return_statement();
 };
 
 #endif
